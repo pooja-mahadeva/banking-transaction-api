@@ -2,11 +2,11 @@
 
 A REST API for managing bank accounts and transactions, built with Java and Spring Boot.
 
-This project models core banking operations — account creation, deposits, withdrawals, and transfers between accounts — with input validation, proper error handling, and unit test coverage for all business logic.
+This project models core banking operations - account creation, deposits, withdrawals, and transfers between accounts - with input validation, proper error handling, and unit test coverage for all business logic.
 
 ## Why I built this
 
-My professional background is in Java backend development for banking and insurance clients (credit card processing, insurance platforms, remittance systems). Since that work is client-owned and not publicly shareable, this project demonstrates the same kind of backend logic — account balances, transaction integrity, validation — in a small, self-contained, public codebase.
+My professional background is in Java backend development for banking and insurance clients (credit card processing, insurance platforms, remittance systems). Since that work is client-owned and not publicly shareable, this project demonstrates the same kind of backend logic - account balances, transaction integrity, validation - in a small, self-contained, public codebase.
 
 ## Tech Stack
 
