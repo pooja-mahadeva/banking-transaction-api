@@ -2,16 +2,17 @@
 
 A REST API for managing bank accounts and transactions, built with Java and Spring Boot.
 
-This project models core banking operations - account creation, deposits, withdrawals, and transfers between accounts - with input validation, proper error handling, and unit test coverage for all business logic.
+This project models core banking operations - account creation, deposits, withdrawals, transfers, balance enquiries, and transaction history - with request validation, centralized error handling, transactional business logic, and automated unit tests for core service behavior.
 
 ## Why I built this
 
-My professional background is in Java backend development for banking and insurance clients (credit card processing, insurance platforms, remittance systems). Since that work is client-owned and not publicly shareable, this project demonstrates the same kind of backend logic - account balances, transaction integrity, validation - in a small, self-contained, public codebase.
+My professional background is in Java backend development for banking and insurance clients (credit card processing, insurance platforms, remittance systems). Since that work is client-owned and not publicly shareable, this project demonstrates similar backend concerns - account balances, transaction integrity, validation, persistence, and API design - in a small, self-contained, public codebase.
 
 ## Tech Stack
 
 - **Java 17**
 - **Spring Boot 3** (Web, Data JPA, Validation)
+- **Springdoc OpenAPI / Swagger UI** for interactive API documentation
 - **H2** in-memory database
 - **JUnit 5 + Mockito** for unit testing
 - **Maven** for build and dependency management
@@ -24,20 +25,30 @@ My professional background is in Java backend development for banking and insura
 - Transfer funds between two accounts atomically
 - View current balance
 - View full transaction history per account
-- Input validation on all requests (e.g. rejects negative amounts)
+- Input validation on all requests (for example, rejecting missing or non-positive amounts)
 - Centralized error handling with meaningful HTTP status codes (404 for missing accounts, 400 for invalid requests/insufficient funds)
+- Interactive Swagger UI generated from the Spring Boot API
 
 ## API Endpoints
 
-| Method | Endpoint                                | Description                          |
-|--------|------------------------------------------|---------------------------------------|
-| POST   | `/api/accounts`                          | Create a new account                  |
-| GET    | `/api/accounts/{accountNumber}`          | Get account details                   |
-| GET    | `/api/accounts/{accountNumber}/balance`  | Get current balance                   |
-| POST   | `/api/accounts/{accountNumber}/deposit`  | Deposit funds                         |
-| POST   | `/api/accounts/{accountNumber}/withdraw` | Withdraw funds                        |
-| POST   | `/api/accounts/{accountNumber}/transfer` | Transfer funds to another account     |
-| GET    | `/api/accounts/{accountNumber}/transactions` | View transaction history          |
+| Method | Endpoint                                     | Description                      |
+|--------|----------------------------------------------|----------------------------------|
+| POST   | `/api/accounts`                              | Create a new account             |
+| GET    | `/api/accounts/{accountNumber}`              | Get account details              |
+| GET    | `/api/accounts/{accountNumber}/balance`      | Get current balance              |
+| POST   | `/api/accounts/{accountNumber}/deposit`      | Deposit funds                    |
+| POST   | `/api/accounts/{accountNumber}/withdraw`     | Withdraw funds                   |
+| POST   | `/api/accounts/{accountNumber}/transfer`     | Transfer funds to another account|
+| GET    | `/api/accounts/{accountNumber}/transactions` | View transaction history         |
+
+## Swagger / OpenAPI
+
+After starting the application, open:
+
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
+The Swagger UI provides an interactive view of the available endpoints and allows API requests to be executed directly from the browser.
 
 ### Example: Create an account
 
@@ -71,7 +82,9 @@ Requirements: Java 17+ and Maven.
 mvn spring-boot:run
 ```
 
-The API will be available at `http://localhost:8080`. An H2 console is available at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:bankingdb`, username: `sa`, no password) for inspecting the in-memory database during development.
+The API will be available at `http://localhost:8080`.
+
+An H2 console is available at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:bankingdb`, username: `sa`, no password) for inspecting the in-memory database during development.
 
 ## Running Tests
 
@@ -79,17 +92,22 @@ The API will be available at `http://localhost:8080`. An H2 console is available
 mvn test
 ```
 
-Unit tests cover account creation, deposits, withdrawals, transfers, and edge cases such as insufficient balance and transfers to non-existent accounts.
+The current unit test suite covers account creation, missing-account handling, deposits, successful and failed withdrawals, and successful and failed transfers using JUnit 5 and Mockito.
+
+## Continuous Integration
+
+GitHub Actions runs `mvn -B test` automatically on pushes and pull requests targeting `main`.
 
 ## Project Structure
 
-```
+```text
 src/main/java/com/pooja/bankingapi/
+├── config/        OpenAPI / Swagger configuration
 ├── controller/    REST endpoints
 ├── service/       Business logic (balance rules, transaction recording)
 ├── repository/    Spring Data JPA repositories
 ├── model/         JPA entities (Account, Transaction)
-├── dto/           Request/response objects with validation
+├── dto/           Request objects with validation
 └── exception/     Custom exceptions + centralized error handling
 ```
 
@@ -98,4 +116,5 @@ src/main/java/com/pooja/bankingapi/
 - Add authentication (Spring Security + JWT)
 - Add pagination for transaction history on high-volume accounts
 - Containerize with Docker for easier deployment
-- Add integration tests against a real PostgreSQL instance
+- Add integration tests against PostgreSQL
+- Add concurrency controls for simultaneous account updates
